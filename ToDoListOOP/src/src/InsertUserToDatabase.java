@@ -55,5 +55,26 @@ public class InsertUserToDatabase {
         }
     }
     
-    
+    public static boolean updateUserData(String currentUsername, String newUsername, String newPassword) {
+        String updateSQL = "UPDATE users SET username = ?, password = ? WHERE username = ?;";
+
+        try (Connection connect = LocalDatabaseConnect();
+             PreparedStatement query = connect.prepareStatement(updateSQL)) {
+
+            query.setString(1, newUsername);
+            query.setString(2, newPassword);
+            query.setString(3, currentUsername);
+
+            int rowsAffected = query.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000")) {
+                System.out.println("The new username already exists. Please choose a different username.");
+            } else {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
 }

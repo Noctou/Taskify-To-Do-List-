@@ -52,6 +52,8 @@ public class TaskifyApp extends javax.swing.JFrame {
         menuPanel = new javax.swing.JPanel();
         logOutButton = new javax.swing.JButton();
         currentUsername = new javax.swing.JLabel();
+        introductoryText = new javax.swing.JLabel();
+        editInfoButton = new javax.swing.JButton();
         tasksPanel = new javax.swing.JPanel();
         taskListContainer = new javax.swing.JPanel();
         taskEntries = new javax.swing.JTabbedPane();
@@ -90,28 +92,43 @@ public class TaskifyApp extends javax.swing.JFrame {
         currentUsername.setForeground(new java.awt.Color(255, 255, 255));
         currentUsername.setText("[Username here]");
 
+        introductoryText.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
+        introductoryText.setText("Currently Logged In as:");
+
+        editInfoButton.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        editInfoButton.setText("Edit Info");
+        editInfoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editInfoButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
         menuPanelLayout.setHorizontalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuPanelLayout.createSequentialGroup()
+                .addGap(54, 54, 54)
                 .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(menuPanelLayout.createSequentialGroup()
-                        .addGap(454, 454, 454)
-                        .addComponent(logOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(menuPanelLayout.createSequentialGroup()
-                        .addGap(54, 54, 54)
-                        .addComponent(currentUsername)))
-                .addContainerGap(454, Short.MAX_VALUE))
+                    .addComponent(introductoryText)
+                    .addComponent(currentUsername)
+                    .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(editInfoButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(logOutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
+                .addContainerGap(774, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuPanelLayout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addGap(25, 25, 25)
+                .addComponent(introductoryText)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(currentUsername)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 368, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(editInfoButton)
+                .addGap(18, 18, 18)
                 .addComponent(logOutButton)
-                .addGap(40, 40, 40))
+                .addContainerGap(348, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Menu", menuPanel);
@@ -240,7 +257,7 @@ public class TaskifyApp extends javax.swing.JFrame {
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
+            .addComponent(tabPanel)
         );
         containerLayout.setVerticalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -325,6 +342,11 @@ public class TaskifyApp extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_logOutButtonActionPerformed
 
+    private void editInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editInfoButtonActionPerformed
+        EditUserDetails editWindow = new EditUserDetails(currentUser);
+        editWindow.setVisible(true);
+    }//GEN-LAST:event_editInfoButtonActionPerformed
+
     private Task getCurrentlySelectedTask() {
         int selectedIndex = taskEntries.getSelectedIndex();
         if (selectedIndex == -1) return null;
@@ -361,32 +383,32 @@ public class TaskifyApp extends javax.swing.JFrame {
     }
     
     public void addTaskToPanel(Task task) {
-    JPanel taskPanel = new JPanel();
-    taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.Y_AXIS));
-    taskPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    taskPanel.setBackground(new Color(60, 60, 60));
+        JPanel taskPanel = new JPanel();
+        taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.Y_AXIS));
+        taskPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        taskPanel.setBackground(new Color(60, 60, 60));
 
-    JLabel descLabel = new JLabel("<html><b>Description:</b> " + task.getDescription() + "</html>");
-    descLabel.setName("descriptionLabel");
+        JLabel descLabel = new JLabel("<html><b>Description:</b> " + task.getDescription() + "</html>");
+        descLabel.setName("descriptionLabel");
 
-    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-    String formatted = task.getDeadline() != null ? format.format(task.getDeadline()) : "None";
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+        String formatted = task.getDeadline() != null ? format.format(task.getDeadline()) : "None";
 
-    JLabel deadlineLabel = new JLabel("<html><b>Deadline:</b> " + formatted + "</html>");
-    deadlineLabel.setName("deadlineLabel");
+        JLabel deadlineLabel = new JLabel("<html><b>Deadline:</b> " + formatted + "</html>");
+        deadlineLabel.setName("deadlineLabel");
 
-    descLabel.setForeground(Color.WHITE);
-    deadlineLabel.setForeground(Color.WHITE);
+        descLabel.setForeground(Color.WHITE);
+        deadlineLabel.setForeground(Color.WHITE);
 
-    taskPanel.add(descLabel);
-    taskPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-    taskPanel.add(deadlineLabel);
+        taskPanel.add(descLabel);
+        taskPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        taskPanel.add(deadlineLabel);
 
-    taskEntries.addTab(task.getTitle(), taskPanel);
-    taskEntries.setSelectedComponent(taskPanel);
+        taskEntries.addTab(task.getTitle(), taskPanel);
+        taskEntries.setSelectedComponent(taskPanel);
 
-    tasksByTitle.put(task.getTitle(), task);
-}
+        tasksByTitle.put(task.getTitle(), task);
+    }
        
     public void loadTasksFromDatabase() {
         tasksByDate.clear();
@@ -401,24 +423,24 @@ public class TaskifyApp extends javax.swing.JFrame {
                 String description = resultSet.getString("taskDescription");
                 java.sql.Date deadline = resultSet.getDate("taskDeadline");
 
-                Task task = new Task(title, description, new java.sql.Timestamp(deadline.getTime())); // ✅
+                Task task = new Task(title, description, new java.sql.Timestamp(deadline.getTime()));
 
                 tasksByTitle.put(title, task);
 
                 addTaskToPanel(task);
     
-        if (deadline != null) {
-            LocalDate localDate = deadline.toLocalDate();
-            tasksByDate.computeIfAbsent(localDate, k -> new ArrayList<>())
-                      .add(task);
-        }
-    }
+                if (deadline != null) {
+                    LocalDate localDate = deadline.toLocalDate();
+                    tasksByDate.computeIfAbsent(localDate, k -> new ArrayList<>())
+                              .add(task);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         taskEntries.revalidate();
         taskEntries.repaint();
-}
+    }
     
     private void updateCalendarDisplay() {
         calendar.getDayChooser().addDateEvaluator(new TaskDateEvaluator(tasksByDate));
@@ -430,8 +452,8 @@ public class TaskifyApp extends javax.swing.JFrame {
             if (selectedDate != null) {
                 showTasksForDate(selectedDate);
             }
-    });
-}
+        });
+    }
     
     private void showTasksForDate(Date date) {
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -449,13 +471,89 @@ public class TaskifyApp extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, message.toString());
         } else {
             JOptionPane.showMessageDialog(this, "No tasks for " + localDate.toString());
-      }
-}
+        }
+    }
 
     private void openTaskDetails(Task task) {
         EditTaskWindow editWindow = new EditTaskWindow(this, task);
         editWindow.setVisible(true);
-}
+    }
+
+    public class TaskDateEvaluator implements com.toedter.calendar.IDateEvaluator {
+        private Date currentDateBeingEvaluated;
+        private Map<LocalDate, List<Task>> tasksByDate;
+        public TaskDateEvaluator(Map<LocalDate, List<Task>> tasksByDate) {
+            this.tasksByDate = tasksByDate;
+        }
+
+        @Override
+        public boolean isSpecial(Date date) {
+            currentDateBeingEvaluated = date;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            LocalDate localDate = LocalDate.of(year, month, day);
+            return tasksByDate.containsKey(localDate);
+        }
+
+        @Override
+        public Color getSpecialForegroundColor() {
+            return Color.WHITE;
+        }
+
+        @Override
+        public Color getSpecialBackroundColor() {
+            if (currentDateBeingEvaluated == null) return null;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDateBeingEvaluated);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            LocalDate localDate = LocalDate.of(year, month, day);
+            List<Task> tasks = tasksByDate.getOrDefault(localDate, new ArrayList<>());
+            boolean hasIncomplete = tasks.stream().anyMatch(task -> !task.isCompleted());
+
+            System.out.println("Evaluating background for: " + localDate + ", tasks present: " + tasksByDate.containsKey(localDate) + ", has incomplete: " + hasIncomplete);
+
+            return hasIncomplete ? new Color(0, 150, 0) : new Color(100, 100, 100);
+        }
+
+        @Override
+        public String getSpecialTooltip() {
+            return "Tasks due";
+        }
+
+        @Override public boolean isInvalid(Date date) { return false; }
+        @Override public Color getInvalidForegroundColor() { return null; }
+        @Override public Color getInvalidBackroundColor() { return null; }
+        @Override public String getInvalidTooltip() { return null; }
+    }
+    
+    public void refreshCalendarHighlighting() {
+        loadAllTasksForCalendar();
+
+        Date currentDate = calendar.getDate();
+        Calendar tempCal = Calendar.getInstance();
+        tempCal.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.setDate(tempCal.getTime());
+        calendar.setDate(currentDate);
+
+        calendar.getDayChooser().addDateEvaluator(new TaskDateEvaluator(tasksByDate));
+
+        calendar.getDayChooser().repaint();
+        calendar.repaint();
+    }
+    
+    private void loadAllTasksForCalendar() {
+        tasksByDate.clear();
+        List<Task> allTasks = TaskDatabase.getAllTasks();
+        for (Task task : allTasks) {
+            LocalDate deadline = task.getDeadline().toLocalDateTime().toLocalDate();
+            tasksByDate.computeIfAbsent(deadline, k -> new ArrayList<>()).add(task);
+        }
+    }
     
     public static void main(String args[]) {
         FlatDarkLaf.setup();
@@ -465,89 +563,13 @@ public class TaskifyApp extends javax.swing.JFrame {
         } catch( Exception ex ) {
             System.err.println("Failed to initialize LaF");
         }
-
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LogIn().setVisible(true);
             }
         });
     }
-
-    public class TaskDateEvaluator implements com.toedter.calendar.IDateEvaluator {
-    private Date currentDateBeingEvaluated;
-    private Map<LocalDate, List<Task>> tasksByDate;
-    public TaskDateEvaluator(Map<LocalDate, List<Task>> tasksByDate) {
-        this.tasksByDate = tasksByDate;
-    }
-
-    @Override
-    public boolean isSpecial(Date date) {
-        currentDateBeingEvaluated = date;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        LocalDate localDate = LocalDate.of(year, month, day);
-        return tasksByDate.containsKey(localDate);
-    }
-
-    @Override
-    public Color getSpecialForegroundColor() {
-        return Color.WHITE;
-    }
-
-    @Override
-    public Color getSpecialBackroundColor() {
-        if (currentDateBeingEvaluated == null) return null;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDateBeingEvaluated);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        LocalDate localDate = LocalDate.of(year, month, day);
-        List<Task> tasks = tasksByDate.getOrDefault(localDate, new ArrayList<>());
-        boolean hasIncomplete = tasks.stream().anyMatch(task -> !task.isCompleted());
-
-        System.out.println("Evaluating background for: " + localDate + ", tasks present: " + tasksByDate.containsKey(localDate) + ", has incomplete: " + hasIncomplete);
-
-        return hasIncomplete ? new Color(0, 150, 0) : new Color(100, 100, 100);
-    }
-
-    @Override
-    public String getSpecialTooltip() {
-        return "Tasks due";
-    }
-
-    @Override public boolean isInvalid(Date date) { return false; }
-    @Override public Color getInvalidForegroundColor() { return null; }
-    @Override public Color getInvalidBackroundColor() { return null; }
-    @Override public String getInvalidTooltip() { return null; }
-}
-    
-    public void refreshCalendarHighlighting() {
-    loadAllTasksForCalendar();
-
-    Date currentDate = calendar.getDate();
-    Calendar tempCal = Calendar.getInstance();
-    tempCal.add(Calendar.DAY_OF_MONTH, 1);
-    calendar.setDate(tempCal.getTime());
-    calendar.setDate(currentDate);
-
-    calendar.getDayChooser().addDateEvaluator(new TaskDateEvaluator(tasksByDate));
-
-    calendar.getDayChooser().repaint();
-    calendar.repaint();
-}
-    
-    private void loadAllTasksForCalendar() {
-    tasksByDate.clear();
-    List<Task> allTasks = TaskDatabase.getAllTasks();
-    for (Task task : allTasks) {
-        LocalDate deadline = task.getDeadline().toLocalDateTime().toLocalDate();
-        tasksByDate.computeIfAbsent(deadline, k -> new ArrayList<>()).add(task);
-    }
-}
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addTaskButton;
@@ -557,6 +579,8 @@ public class TaskifyApp extends javax.swing.JFrame {
     private javax.swing.JPanel container;
     private javax.swing.JLabel currentUsername;
     private javax.swing.JButton editButton;
+    private javax.swing.JButton editInfoButton;
+    private javax.swing.JLabel introductoryText;
     private javax.swing.JButton logOutButton;
     private javax.swing.JPanel menuPanel;
     private javax.swing.JButton removeTaskButton;
