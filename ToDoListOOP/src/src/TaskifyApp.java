@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
-
 public class TaskifyApp extends javax.swing.JFrame {
     private String currentUser;
 
