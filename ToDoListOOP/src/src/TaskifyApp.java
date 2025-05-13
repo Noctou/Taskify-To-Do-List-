@@ -54,6 +54,8 @@ public class TaskifyApp extends javax.swing.JFrame {
         currentUsername = new javax.swing.JLabel();
         introductoryText = new javax.swing.JLabel();
         editInfoButton = new javax.swing.JButton();
+        prioritizedPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         tasksPanel = new javax.swing.JPanel();
         taskListContainer = new javax.swing.JPanel();
         taskEntries = new javax.swing.JTabbedPane();
@@ -103,6 +105,30 @@ public class TaskifyApp extends javax.swing.JFrame {
             }
         });
 
+        prioritizedPanel.setBackground(new java.awt.Color(51, 51, 51));
+        prioritizedPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+
+        jLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Prioritized Tasks:");
+
+        javax.swing.GroupLayout prioritizedPanelLayout = new javax.swing.GroupLayout(prioritizedPanel);
+        prioritizedPanel.setLayout(prioritizedPanelLayout);
+        prioritizedPanelLayout.setHorizontalGroup(
+            prioritizedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(prioritizedPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel1)
+                .addContainerGap(551, Short.MAX_VALUE))
+        );
+        prioritizedPanelLayout.setVerticalGroup(
+            prioritizedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(prioritizedPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel1)
+                .addContainerGap(421, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
         menuPanelLayout.setHorizontalGroup(
@@ -113,22 +139,27 @@ public class TaskifyApp extends javax.swing.JFrame {
                     .addComponent(introductoryText)
                     .addComponent(currentUsername)
                     .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(editInfoButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(logOutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
-                .addContainerGap(774, Short.MAX_VALUE))
+                        .addComponent(logOutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(editInfoButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)))
+                .addGap(63, 63, 63)
+                .addComponent(prioritizedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuPanelLayout.createSequentialGroup()
+            .addGroup(menuPanelLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addComponent(introductoryText)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(currentUsername)
-                .addGap(18, 18, 18)
-                .addComponent(editInfoButton)
-                .addGap(18, 18, 18)
-                .addComponent(logOutButton)
-                .addContainerGap(348, Short.MAX_VALUE))
+                .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(prioritizedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(menuPanelLayout.createSequentialGroup()
+                        .addComponent(introductoryText)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(currentUsername)
+                        .addGap(18, 18, 18)
+                        .addComponent(editInfoButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(logOutButton)))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Menu", menuPanel);
@@ -192,7 +223,7 @@ public class TaskifyApp extends javax.swing.JFrame {
                     .addComponent(editButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(taskListContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
         tasksPanelLayout.setVerticalGroup(
             tasksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,7 +272,7 @@ public class TaskifyApp extends javax.swing.JFrame {
             .addGroup(calendarPanelLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(calendarContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         calendarPanelLayout.setVerticalGroup(
             calendarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -581,8 +612,10 @@ public class TaskifyApp extends javax.swing.JFrame {
     private javax.swing.JButton editButton;
     private javax.swing.JButton editInfoButton;
     private javax.swing.JLabel introductoryText;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JButton logOutButton;
     private javax.swing.JPanel menuPanel;
+    private javax.swing.JPanel prioritizedPanel;
     private javax.swing.JButton removeTaskButton;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JTabbedPane taskEntries;

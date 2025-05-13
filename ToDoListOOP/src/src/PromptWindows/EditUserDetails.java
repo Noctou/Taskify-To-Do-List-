@@ -96,6 +96,8 @@ public class EditUserDetails extends javax.swing.JFrame {
         confirmPasswordField.setForeground(new java.awt.Color(255, 255, 255));
         confirmPasswordField.setText("jPasswordField1");
 
+        passwordMatchLabel.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+
         toggleVisibility.setText("jLabel1");
 
         toggleVisibilityConfirm.setText("jLabel2");
