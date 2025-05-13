@@ -24,15 +24,9 @@ public class AddTaskWindow extends javax.swing.JFrame {
         timeSpinner.setEditor(timeEditor);
         timeSpinner.setValue(new Date());
         timeSpinner.setToolTipText("Use arrow keys or type time in hh:mm AM/PM format");
-
-        timePreviewLabel.setText("Selected time: --:--");
-        timePreviewLabel.setFont(new java.awt.Font("Monospaced", 0, 12));
-        timePreviewLabel.setForeground(java.awt.Color.WHITE);
-
         timeSpinner.addChangeListener(e -> {
             Date time = (Date) timeSpinner.getValue();
             SimpleDateFormat fmt = new SimpleDateFormat("hh:mm a");
-            timePreviewLabel.setText("Selected time: " + fmt.format(time));
         });
 
         setLocationRelativeTo(parent);
@@ -57,7 +51,6 @@ public class AddTaskWindow extends javax.swing.JFrame {
         selectDeadline = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
         timeSpinner = new javax.swing.JSpinner();
-        timePreviewLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(590, 455));
@@ -99,8 +92,6 @@ public class AddTaskWindow extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         jLabel1.setText("Select time:");
 
-        timePreviewLabel.setText("\"Selected time: --:--\"");
-
         javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
@@ -128,11 +119,8 @@ public class AddTaskWindow extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(timeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(containerLayout.createSequentialGroup()
-                        .addComponent(confirmButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(timePreviewLabel)))
-                .addGap(73, 73, 73))
+                    .addComponent(confirmButton))
+                .addGap(119, 119, 119))
         );
         containerLayout.setVerticalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -152,15 +140,10 @@ public class AddTaskWindow extends javax.swing.JFrame {
                     .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
                         .addComponent(timeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(containerLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cancelButton)
-                            .addComponent(confirmButton)))
-                    .addGroup(containerLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(timePreviewLabel)))
+                .addGap(18, 18, 18)
+                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelButton)
+                    .addComponent(confirmButton))
                 .addContainerGap(106, Short.MAX_VALUE))
         );
 
@@ -251,7 +234,6 @@ public class AddTaskWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrollableTextArea;
     private com.toedter.calendar.JDateChooser selectDeadline;
     private javax.swing.JLabel taskTitleLabel;
-    private javax.swing.JLabel timePreviewLabel;
     private javax.swing.JSpinner timeSpinner;
     private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables

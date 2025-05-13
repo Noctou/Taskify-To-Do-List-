@@ -27,7 +27,7 @@ public class TaskDatabase {
     }
     
     public static boolean insertTask(Task task) {
-    String sql = "INSERT INTO task (taskTitle, taskDescription, taskDeadline) VALUES (?, ?, ?)";
+    String sql = "INSERT INTO task (taskTitle, taskDescription, taskDeadline, isPriority) VALUES (?, ?, ?, ?)";
     
     try (Connection conn = LocalDatabaseConnect();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -35,6 +35,7 @@ public class TaskDatabase {
         stmt.setString(1, task.getTitle());
         stmt.setString(2, task.getDescription());
         stmt.setTimestamp(3, task.getDeadline());
+        stmt.setBoolean(4, task.isPriority());
         
         return stmt.executeUpdate() > 0;
     } catch (SQLException e) {
@@ -43,8 +44,8 @@ public class TaskDatabase {
     }
 }
     
-    public static boolean updateTask(String originalTitle, String newTitle, String newDescription, Date newDeadline) {
-        String updateSQL = "UPDATE task SET taskTitle = ?, taskDescription = ?, taskDeadline = ? WHERE taskTitle = ?";
+    public static boolean updateTask(String originalTitle, String newTitle, String newDescription, Date newDeadline, boolean isPriority) {
+        String updateSQL = "UPDATE task SET taskTitle = ?, taskDescription = ?, taskDeadline = ?, isPriority = ? WHERE taskTitle = ?";
 
         try (Connection connect = InsertUserToDatabase.LocalDatabaseConnect();
              PreparedStatement query = connect.prepareStatement(updateSQL)) {
@@ -52,7 +53,8 @@ public class TaskDatabase {
             query.setString(1, newTitle);
             query.setString(2, newDescription);
             query.setTimestamp(3, new java.sql.Timestamp(newDeadline.getTime()));
-            query.setString(4, originalTitle);
+            query.setBoolean(4, newPriority);
+            query.setString(5, originalTitle);
 
             int rowsAffected = query.executeUpdate();
             return rowsAffected > 0;
@@ -100,6 +102,7 @@ public class TaskDatabase {
                     rs.getString("taskDescription"),
                     rs.getTimestamp("taskDeadline")
                 );
+                task.setPriority(rs.getBoolean("isPriority"));
                 tasks.add(task);
             }
         } catch (SQLException e) {
@@ -124,6 +127,7 @@ public class TaskDatabase {
                     rs.getString("taskDescription"),
                     rs.getTimestamp("taskDeadline")
                 );
+                task.setPriority(rs.getBoolean("isPriority"));
                 tasks.add(task);
             }
         } catch (SQLException e) {
@@ -146,6 +150,7 @@ public class TaskDatabase {
                     rs.getString("taskDescription"),
                     rs.getTimestamp("taskDeadline")
                 );
+                task.setPriority(rs.getBoolean("isPriority"));
                 tasks.add(task);
             }
         } catch (SQLException e) {

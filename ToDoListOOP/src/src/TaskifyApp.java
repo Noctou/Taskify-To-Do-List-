@@ -61,6 +61,7 @@ public class TaskifyApp extends javax.swing.JFrame {
         addTaskButton = new javax.swing.JButton();
         removeTaskButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
+        prioritizeButton = new javax.swing.JButton();
         calendarPanel = new javax.swing.JPanel();
         calendarContainer = new javax.swing.JPanel();
         calendar = new com.toedter.calendar.JCalendar();
@@ -210,19 +211,29 @@ public class TaskifyApp extends javax.swing.JFrame {
             }
         });
 
+        prioritizeButton.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        prioritizeButton.setForeground(new java.awt.Color(255, 255, 255));
+        prioritizeButton.setText("Prioritize");
+        prioritizeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prioritizeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout tasksPanelLayout = new javax.swing.GroupLayout(tasksPanel);
         tasksPanel.setLayout(tasksPanelLayout);
         tasksPanelLayout.setHorizontalGroup(
             tasksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tasksPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(tasksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addTaskButton)
-                    .addComponent(removeTaskButton)
-                    .addComponent(editButton))
+                .addGroup(tasksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(prioritizeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addTaskButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeTaskButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(taskListContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         tasksPanelLayout.setVerticalGroup(
             tasksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,7 +248,9 @@ public class TaskifyApp extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(removeTaskButton)
                         .addGap(18, 18, 18)
-                        .addComponent(editButton)))
+                        .addComponent(editButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(prioritizeButton)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -376,6 +389,42 @@ public class TaskifyApp extends javax.swing.JFrame {
         EditUserDetails editWindow = new EditUserDetails(currentUser);
         editWindow.setVisible(true);
     }//GEN-LAST:event_editInfoButtonActionPerformed
+
+    private void prioritizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prioritizeButtonActionPerformed
+        Task selectedTask = getCurrentlySelectedTask();
+        if (selectedTask == null) {
+            JOptionPane.showMessageDialog(this, "Please select a task to prioritize.");
+            return;
+        }
+
+        selectedTask.setPriority(true);
+
+        boolean updated = TaskDatabase.updateTask(
+            selectedTask.getTitle(),
+            selectedTask.getTitle(),
+            selectedTask.getDescription(),
+            selectedTask.getDeadline(),
+            true // Set isPriority to true
+        );
+
+        if (updated) {
+            // Change tab title to indicate priority (e.g. prefix with ★)
+            int selectedIndex = taskEntries.getSelectedIndex();
+            String currentTitle = selectedTask.getTitle();
+            taskEntries.setTitleAt(selectedIndex, "★ " + currentTitle);
+
+            // Show in prioritized panel
+            JLabel priorityLabel = new JLabel(currentTitle);
+            priorityLabel.setForeground(Color.YELLOW);
+            prioritizedPanel.add(priorityLabel);
+            prioritizedPanel.revalidate();
+            prioritizedPanel.repaint();
+
+            JOptionPane.showMessageDialog(this, "Task marked as priority.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to update priority in database.");
+        }
+    }//GEN-LAST:event_prioritizeButtonActionPerformed
 
     private Task getCurrentlySelectedTask() {
         int selectedIndex = taskEntries.getSelectedIndex();
@@ -614,6 +663,7 @@ public class TaskifyApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton logOutButton;
     private javax.swing.JPanel menuPanel;
+    private javax.swing.JButton prioritizeButton;
     private javax.swing.JPanel prioritizedPanel;
     private javax.swing.JButton removeTaskButton;
     private javax.swing.JTabbedPane tabPanel;
