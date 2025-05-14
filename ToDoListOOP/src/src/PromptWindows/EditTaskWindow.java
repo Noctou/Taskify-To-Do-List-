@@ -1,16 +1,18 @@
 package src.PromptWindows;
 
-import src.Task;
 import com.formdev.flatlaf.FlatDarkLaf;
-import javax.swing.UIManager;
-import src.TaskifyApp;
-import java.util.Date;
-import javax.swing.*;
-import java.awt.Component;
-import java.text.SimpleDateFormat;
+
+import src.Task;
 import src.TaskDatabase;
+import src.TaskifyApp;
+
+import javax.swing.*;
+import java.awt.*;
+
+import java.util.Date;
 import java.util.Calendar;
 
+import java.text.SimpleDateFormat;
 
 public class EditTaskWindow extends javax.swing.JFrame {
 
@@ -23,10 +25,10 @@ public class EditTaskWindow extends javax.swing.JFrame {
         this.taskifyApp = taskifyApp;
         
         SpinnerDateModel timeModel = new SpinnerDateModel();
-        jSpinner1.setModel(timeModel);
-        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(jSpinner1, "hh:mm a");
-        jSpinner1.setEditor(timeEditor);
-        jSpinner1.setValue(new Date(task.getDeadline().getTime()));
+        timeSpinner.setModel(timeModel);
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "hh:mm a");
+        timeSpinner.setEditor(timeEditor);
+        timeSpinner.setValue(new Date(task.getDeadline().getTime()));
     }
 
     @SuppressWarnings("unchecked")
@@ -42,8 +44,8 @@ public class EditTaskWindow extends javax.swing.JFrame {
         selectDeadline = new com.toedter.calendar.JDateChooser();
         cancelButton = new javax.swing.JButton();
         confirmButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        selectTimeLabel = new javax.swing.JLabel();
+        timeSpinner = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,37 +75,37 @@ public class EditTaskWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
-        jLabel1.setText("Select Time:");
+        selectTimeLabel.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        selectTimeLabel.setText("Select Time:");
 
         javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descLabel)
+                    .addComponent(titleLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(containerLayout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(titleLabel)
-                        .addGap(25, 25, 25)
-                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cancelButton)
-                            .addComponent(selectDeadline, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(50, 50, 50)
-                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(confirmButton)
-                            .addGroup(containerLayout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(selectDeadline, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(72, 72, 72)
+                        .addComponent(selectTimeLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(timeSpinner))
                     .addGroup(containerLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(descLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(titleField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(23, Short.MAX_VALUE))
+                            .addComponent(titleField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(containerLayout.createSequentialGroup()
+                                .addGap(46, 46, 46)
+                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(54, 54, 54)
+                                .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         containerLayout.setVerticalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,21 +115,20 @@ public class EditTaskWindow extends javax.swing.JFrame {
                     .addComponent(titleLabel)
                     .addComponent(titleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(containerLayout.createSequentialGroup()
-                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(descLabel)
-                            .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(selectDeadline, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSpinner1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel1))
+                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descLabel)
+                    .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectDeadline, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(timeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(selectTimeLabel)))
+                .addGap(54, 54, 54)
                 .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(confirmButton))
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -168,7 +169,7 @@ public class EditTaskWindow extends javax.swing.JFrame {
         dateCal.setTime(selectDeadline.getDate());
 
         Calendar timeCal = Calendar.getInstance();
-        timeCal.setTime((Date) jSpinner1.getValue());
+        timeCal.setTime((Date) timeSpinner.getValue());
 
         dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
         dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
@@ -230,10 +231,10 @@ public class EditTaskWindow extends javax.swing.JFrame {
     private javax.swing.JPanel container;
     private javax.swing.JLabel descLabel;
     private javax.swing.JTextArea descTextArea;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JScrollPane scrollPane;
     private com.toedter.calendar.JDateChooser selectDeadline;
+    private javax.swing.JLabel selectTimeLabel;
+    private javax.swing.JSpinner timeSpinner;
     private javax.swing.JTextField titleField;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables

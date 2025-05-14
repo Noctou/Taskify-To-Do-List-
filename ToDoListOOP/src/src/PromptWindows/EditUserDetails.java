@@ -1,15 +1,17 @@
 package src.PromptWindows;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import javax.swing.UIManager;
+
 import src.InsertUserToDatabase;
-import javax.swing.event.*;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Image;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+import javax.swing.UIManager;
 import javax.swing.ImageIcon;
+
+import javax.swing.event.*;
+
+import java.awt.event.*;
+
+import java.awt.*;
 
 public class EditUserDetails extends javax.swing.JFrame {
     

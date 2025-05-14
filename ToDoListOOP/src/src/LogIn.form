@@ -200,9 +200,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="logo">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="LOGO"/>
-          </Properties>
         </Component>
       </SubComponents>
     </Container>

@@ -1,6 +1,7 @@
 package src;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,11 +10,11 @@ public class LogIn extends javax.swing.JFrame {
     
     ImageIcon showToggle = new ImageIcon("src\\images\\showPassword.png");
     ImageIcon hideToggle = new ImageIcon("src\\images\\hidePassword.png");
-    ImageIcon logoIcon;
+    //ImageIcon logoIcon;
     
     public LogIn() {
         initComponents();
-        
+        /*
         try {
             String imagePath = "src\\images\\todolist.png"; 
             logoIcon = new ImageIcon(imagePath);
@@ -35,6 +36,7 @@ public class LogIn extends javax.swing.JFrame {
             System.err.println("Error loading logo: " + e.getMessage());
             logo.setText("Logo");
         }
+        */
         setLocationRelativeTo(null);
         setTitle("Log In");
         registerLinkActionPerformed();
@@ -104,8 +106,6 @@ public class LogIn extends javax.swing.JFrame {
         });
 
         toggleVisibility.setText("jLabel2");
-
-        logo.setText("LOGO");
 
         javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
         container.setLayout(containerLayout);

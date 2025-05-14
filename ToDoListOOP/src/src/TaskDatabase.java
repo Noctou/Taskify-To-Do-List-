@@ -1,15 +1,17 @@
 package src;
 
+import static src.InsertUserToDatabase.LocalDatabaseConnect;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
-import static src.InsertUserToDatabase.LocalDatabaseConnect;
 
 public class TaskDatabase {
     public static boolean deleteTask(String taskTitle) {      
@@ -27,22 +29,22 @@ public class TaskDatabase {
     }
     
     public static boolean insertTask(Task task) {
-    String sql = "INSERT INTO task (taskTitle, taskDescription, taskDeadline, isPriority) VALUES (?, ?, ?, ?)";
-    
-    try (Connection conn = LocalDatabaseConnect();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setString(1, task.getTitle());
-        stmt.setString(2, task.getDescription());
-        stmt.setTimestamp(3, task.getDeadline());
-        stmt.setBoolean(4, task.isPriority());
-        
-        return stmt.executeUpdate() > 0;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
+        String sql = "INSERT INTO task (taskTitle, taskDescription, taskDeadline, isPriority) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = LocalDatabaseConnect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, task.getTitle());
+            stmt.setString(2, task.getDescription());
+            stmt.setTimestamp(3, task.getDeadline());
+            stmt.setBoolean(4, task.isPriority());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-}
     
     public static boolean updateTask(String originalTitle, String newTitle, String newDescription, Date newDeadline, boolean isPriority) {
         String updateSQL = "UPDATE task SET taskTitle = ?, taskDescription = ?, taskDeadline = ?, isPriority = ? WHERE taskTitle = ?";
@@ -66,11 +68,9 @@ public class TaskDatabase {
     }
     
     public static boolean updateTask(String originalTitle, String newTitle, String newDescription, Date newDeadline) {
-        // Look up current priority status
         Task task = getTaskByTitle(originalTitle);
         boolean isPriority = task != null && task.isPriority();
 
-        // Call the main version with 5 values
         return updateTask(originalTitle, newTitle, newDescription, newDeadline, isPriority);
     }
 
@@ -171,7 +171,7 @@ public class TaskDatabase {
     }
     
     public Timestamp getDeadline() {
-    return deadline;
+        return deadline;
     }
     
     public static Task getTaskByTitle(String title) {
