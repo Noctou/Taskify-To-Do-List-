@@ -27,11 +27,19 @@ public class TaskifyApp extends javax.swing.JFrame {
     
     public TaskifyApp(String username) {
         this.currentUser = username;
-        initComponents();
+        initComponents(); // DON'T touch inside this
+
         setLocationRelativeTo(null);
         setTitle("Taskify");
         currentUsername.setText(username);
-        loadTasksFromDatabase();
+
+        // Your custom logic starts here
+        prioritizedPanel.setLayout(new BoxLayout(prioritizedPanel, BoxLayout.Y_AXIS));
+        prioritizedPanel.setBackground(new Color(60, 60, 60)); // optional for visibility
+        prioritizedPanel.setPreferredSize(new Dimension(600, 300)); // Width x Height
+
+        loadTasksFromDatabase();  // this already calls loadPrioritizedTasks()
+
         updateCalendarDisplay();
         setResizable(false);
     }
@@ -54,7 +62,6 @@ public class TaskifyApp extends javax.swing.JFrame {
         introductoryText = new javax.swing.JLabel();
         editInfoButton = new javax.swing.JButton();
         prioritizedPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         tasksPanel = new javax.swing.JPanel();
         taskListContainer = new javax.swing.JPanel();
         taskEntries = new javax.swing.JTabbedPane();
@@ -108,25 +115,15 @@ public class TaskifyApp extends javax.swing.JFrame {
         prioritizedPanel.setBackground(new java.awt.Color(51, 51, 51));
         prioritizedPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
 
-        jLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Prioritized Tasks:");
-
         javax.swing.GroupLayout prioritizedPanelLayout = new javax.swing.GroupLayout(prioritizedPanel);
         prioritizedPanel.setLayout(prioritizedPanelLayout);
         prioritizedPanelLayout.setHorizontalGroup(
             prioritizedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(prioritizedPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jLabel1)
-                .addContainerGap(551, Short.MAX_VALUE))
+            .addGap(0, 510, Short.MAX_VALUE)
         );
         prioritizedPanelLayout.setVerticalGroup(
             prioritizedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(prioritizedPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jLabel1)
-                .addContainerGap(421, Short.MAX_VALUE))
+            .addGap(0, 338, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
@@ -141,9 +138,9 @@ public class TaskifyApp extends javax.swing.JFrame {
                     .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(logOutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(editInfoButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)))
-                .addGap(63, 63, 63)
+                .addGap(53, 53, 53)
                 .addComponent(prioritizedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(249, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,7 +156,7 @@ public class TaskifyApp extends javax.swing.JFrame {
                         .addComponent(editInfoButton)
                         .addGap(18, 18, 18)
                         .addComponent(logOutButton)))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(151, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Menu", menuPanel);
@@ -411,11 +408,16 @@ public class TaskifyApp extends javax.swing.JFrame {
             // Change tab title to indicate priority (e.g. prefix with ★)
             int selectedIndex = taskEntries.getSelectedIndex();
             String currentTitle = selectedTask.getTitle();
+            //sets the prioritized task with a star for indication
             taskEntries.setTitleAt(selectedIndex, "★ " + currentTitle);
+            //checks if the task is already prioritized
+            if (!currentTitle.startsWith("★ ")) {
+                taskEntries.setTitleAt(selectedIndex, "★ " + currentTitle);
+            }
 
             // Show in prioritized panel
             JLabel priorityLabel = new JLabel(currentTitle);
-            priorityLabel.setForeground(Color.YELLOW);
+            priorityLabel.setForeground(Color.MAGENTA);
             prioritizedPanel.add(priorityLabel);
             prioritizedPanel.revalidate();
             prioritizedPanel.repaint();
@@ -483,7 +485,8 @@ public class TaskifyApp extends javax.swing.JFrame {
         taskPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         taskPanel.add(deadlineLabel);
 
-        taskEntries.addTab(task.getTitle(), taskPanel);
+        String displayTitle = task.isPriority() ? "★ " + task.getTitle() : task.getTitle();
+        taskEntries.addTab(displayTitle, taskPanel);    
         taskEntries.setSelectedComponent(taskPanel);
 
         tasksByTitle.put(task.getTitle(), task);
@@ -495,7 +498,7 @@ public class TaskifyApp extends javax.swing.JFrame {
 
         try (Connection connect = InsertUserToDatabase.LocalDatabaseConnect();
              Statement statement = connect.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT taskTitle, taskDescription, taskDeadline FROM task")) {
+             ResultSet resultSet = statement.executeQuery("SELECT taskTitle, taskDescription, taskDeadline, isPriority FROM task")) {
 
             while (resultSet.next()) {
                 String title = resultSet.getString("taskTitle");
@@ -503,7 +506,7 @@ public class TaskifyApp extends javax.swing.JFrame {
                 java.sql.Date deadline = resultSet.getDate("taskDeadline");
 
                 Task task = new Task(title, description, new java.sql.Timestamp(deadline.getTime()));
-
+                task.setPriority(resultSet.getBoolean("isPriority"));
                 tasksByTitle.put(title, task);
 
                 addTaskToPanel(task);
@@ -519,6 +522,8 @@ public class TaskifyApp extends javax.swing.JFrame {
         }
         taskEntries.revalidate();
         taskEntries.repaint();
+        
+        loadPrioritizedTasks(); // Load the prioritized panel after loading all tasks
     }
     
     private void updateCalendarDisplay() {
@@ -551,11 +556,6 @@ public class TaskifyApp extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "No tasks for " + localDate.toString());
         }
-    }
-
-    private void openTaskDetails(Task task) {
-        EditTaskWindow editWindow = new EditTaskWindow(this, task);
-        editWindow.setVisible(true);
     }
 
     public class TaskDateEvaluator implements com.toedter.calendar.IDateEvaluator {
@@ -593,8 +593,6 @@ public class TaskifyApp extends javax.swing.JFrame {
             LocalDate localDate = LocalDate.of(year, month, day);
             List<Task> tasks = tasksByDate.getOrDefault(localDate, new ArrayList<>());
             boolean hasIncomplete = tasks.stream().anyMatch(task -> !task.isCompleted());
-
-            System.out.println("Evaluating background for: " + localDate + ", tasks present: " + tasksByDate.containsKey(localDate) + ", has incomplete: " + hasIncomplete);
 
             return hasIncomplete ? new Color(0, 150, 0) : new Color(100, 100, 100);
         }
@@ -634,6 +632,29 @@ public class TaskifyApp extends javax.swing.JFrame {
         }
     }
     
+    private void loadPrioritizedTasks() {
+    prioritizedPanel.removeAll(); // Clear previous content
+
+    JLabel header = new JLabel("Prioritized Tasks:");
+    header.setForeground(Color.WHITE);
+    header.setFont(new Font("Monospaced", Font.BOLD, 13));
+    prioritizedPanel.add(header);
+
+    for (Task task : tasksByTitle.values()) {
+        if (task.isPriority()) {
+            JLabel priorityLabel = new JLabel("★ " + task.getTitle());
+            priorityLabel.setForeground(Color.MAGENTA);
+            priorityLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
+            prioritizedPanel.add(priorityLabel);
+        }
+    }
+
+    prioritizedPanel.revalidate();
+    prioritizedPanel.repaint();
+}
+
+
+    
     public static void main(String args[]) {
         FlatDarkLaf.setup();
         
@@ -660,7 +681,6 @@ public class TaskifyApp extends javax.swing.JFrame {
     private javax.swing.JButton editButton;
     private javax.swing.JButton editInfoButton;
     private javax.swing.JLabel introductoryText;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JButton logOutButton;
     private javax.swing.JPanel menuPanel;
     private javax.swing.JButton prioritizeButton;

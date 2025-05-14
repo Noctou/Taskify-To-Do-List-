@@ -24,7 +24,7 @@ public class EditTaskWindow extends javax.swing.JFrame {
         
         SpinnerDateModel timeModel = new SpinnerDateModel();
         jSpinner1.setModel(timeModel);
-        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(jSpinner1, "HH:mm");
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(jSpinner1, "hh:mm a");
         jSpinner1.setEditor(timeEditor);
         jSpinner1.setValue(new Date(task.getDeadline().getTime()));
     }

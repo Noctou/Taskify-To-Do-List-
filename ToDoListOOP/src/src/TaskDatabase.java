@@ -53,16 +53,27 @@ public class TaskDatabase {
             query.setString(1, newTitle);
             query.setString(2, newDescription);
             query.setTimestamp(3, new java.sql.Timestamp(newDeadline.getTime()));
-            query.setBoolean(4, newPriority);
+            query.setBoolean(4, isPriority);
             query.setString(5, originalTitle);
 
             int rowsAffected = query.executeUpdate();
             return rowsAffected > 0;
+            
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
+    
+    public static boolean updateTask(String originalTitle, String newTitle, String newDescription, Date newDeadline) {
+        // Look up current priority status
+        Task task = getTaskByTitle(originalTitle);
+        boolean isPriority = task != null && task.isPriority();
+
+        // Call the main version with 5 values
+        return updateTask(originalTitle, newTitle, newDescription, newDeadline, isPriority);
+    }
+
     
     public static boolean taskExists(String title) {
         String checkSQL = "SELECT COUNT(*) FROM task WHERE taskTitle = ?";
@@ -161,5 +172,28 @@ public class TaskDatabase {
     
     public Timestamp getDeadline() {
     return deadline;
+    }
+    
+    public static Task getTaskByTitle(String title) {
+        String sql = "SELECT * FROM task WHERE taskTitle = ?";
+        try (Connection connect = LocalDatabaseConnect();
+             PreparedStatement stmt = connect.prepareStatement(sql)) {
+
+            stmt.setString(1, title);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Task task = new Task(
+                    rs.getString("taskTitle"),
+                    rs.getString("taskDescription"),
+                    rs.getTimestamp("taskDeadline")
+                );
+                task.setPriority(rs.getBoolean("isPriority"));
+                return task;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
