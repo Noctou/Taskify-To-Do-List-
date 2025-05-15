@@ -115,16 +115,18 @@ public class TaskifyApp extends javax.swing.JFrame {
 
         prioritizedContainer.setBackground(new java.awt.Color(51, 51, 51));
         prioritizedContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        prioritizedContainer.setMaximumSize(new java.awt.Dimension(500, 400));
+        prioritizedContainer.setPreferredSize(new java.awt.Dimension(600, 300));
 
         javax.swing.GroupLayout prioritizedContainerLayout = new javax.swing.GroupLayout(prioritizedContainer);
         prioritizedContainer.setLayout(prioritizedContainerLayout);
         prioritizedContainerLayout.setHorizontalGroup(
             prioritizedContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 738, Short.MAX_VALUE)
+            .addGap(0, 727, Short.MAX_VALUE)
         );
         prioritizedContainerLayout.setVerticalGroup(
             prioritizedContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 468, Short.MAX_VALUE)
+            .addGap(0, 454, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
@@ -140,15 +142,15 @@ public class TaskifyApp extends javax.swing.JFrame {
                         .addComponent(logOutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(editInfoButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)))
                 .addGap(53, 53, 53)
-                .addComponent(prioritizedContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addComponent(prioritizedContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 729, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuPanelLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(prioritizedContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prioritizedContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(menuPanelLayout.createSequentialGroup()
                         .addComponent(introductoryText)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -157,7 +159,7 @@ public class TaskifyApp extends javax.swing.JFrame {
                         .addComponent(editInfoButton)
                         .addGap(18, 18, 18)
                         .addComponent(logOutButton)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Menu", menuPanel);
@@ -324,37 +326,50 @@ public class TaskifyApp extends javax.swing.JFrame {
 
     private void removeTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeTaskButtonActionPerformed
         int selectedIndex = taskEntries.getSelectedIndex();
-        if(selectedIndex != -1) {
-            String taskTitle = taskEntries.getTitleAt(selectedIndex);
+    if (selectedIndex != -1) {
+        String taskTitle = taskEntries.getTitleAt(selectedIndex);
 
-            Task taskToDelete = tasksByTitle.get(taskTitle.toLowerCase());
-            if(taskToDelete == null) {
-                JOptionPane.showMessageDialog(this, "Task not found.");
-                return;
-            }
+        // Remove the "★ " prefix if present
+        String cleanTitle = taskTitle.startsWith("★ ") ? taskTitle.substring(2) : taskTitle;
 
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "Are you done with " + taskTitle + "? It will be removed.",
-                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
+        Task taskToDelete = tasksByTitle.get(cleanTitle.toLowerCase());
+        if (taskToDelete == null) {
+            JOptionPane.showMessageDialog(this, "Task not found.");
+            return;
+        }
 
-            if(confirm == JOptionPane.YES_OPTION) {
-                boolean success = TaskDatabase.deleteTask(taskTitle);
-                if(success) {
-                    taskEntries.remove(selectedIndex);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you done with " + cleanTitle + "? It will be removed.",
+                "Confirm Delete", JOptionPane.YES_NO_OPTION);
 
-                    LocalDate deadline = taskToDelete.getDeadline().toLocalDateTime().toLocalDate();
-                    List<Task> tasksOnDate = tasksByDate.get(deadline);
-                    if(tasksOnDate != null) {
-                        tasksOnDate.remove(taskToDelete);
-                        if(tasksOnDate.isEmpty()) {
-                            tasksByDate.remove(deadline);
-                        }
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = TaskDatabase.deleteTask(cleanTitle);
+            if (success) {
+                taskEntries.remove(selectedIndex);
+
+                LocalDate deadline = taskToDelete.getDeadline().toLocalDateTime().toLocalDate();
+                List<Task> tasksOnDate = tasksByDate.get(deadline);
+                if (tasksOnDate != null) {
+                    tasksOnDate.remove(taskToDelete);
+                    if (tasksOnDate.isEmpty()) {
+                        tasksByDate.remove(deadline);
                     }
-                    tasksByTitle.remove(taskTitle);
+                }
+                tasksByTitle.remove(cleanTitle.toLowerCase());
 
-                    JOptionPane.showMessageDialog(this, "Task deleted successfully.");
+                // Optional: Remove from prioritized panel if it exists
+                for (Component comp : prioritizedContainer.getComponents()) {
+                    if (comp instanceof JLabel label && label.getText().equals(cleanTitle)) {
+                        prioritizedContainer.remove(label);
+                        break;
+                    }
+                }
+                prioritizedContainer.revalidate();
+                prioritizedContainer.repaint();
 
-                    refreshCalendarHighlighting();
+                JOptionPane.showMessageDialog(this, "Task deleted successfully.");
+
+                refreshCalendarHighlighting();
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to delete task from database.");
                 }
@@ -386,30 +401,30 @@ public class TaskifyApp extends javax.swing.JFrame {
 
     private void prioritizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prioritizeButtonActionPerformed
         Task selectedTask = getCurrentlySelectedTask();
-        if(selectedTask == null) {
+        if (selectedTask == null) {
             JOptionPane.showMessageDialog(this, "Please select a task to prioritize.");
             return;
         }
 
         selectedTask.setPriority(true);
+        String currentTitle = selectedTask.getTitle();
 
         boolean updated = TaskDatabase.updateTask(
-            selectedTask.getTitle(),
-            selectedTask.getTitle(),
+            currentTitle,
+            currentTitle,
             selectedTask.getDescription(),
             selectedTask.getDeadline(),
             true
         );
 
-        if(updated) {
+        if (updated) {
             int selectedIndex = taskEntries.getSelectedIndex();
-            String currentTitle = selectedTask.getTitle();
-            taskEntries.setTitleAt(selectedIndex, "★ " + currentTitle);
-            if(!currentTitle.startsWith("★ ")) {
+
+            if (!currentTitle.startsWith("★ ")) {
                 taskEntries.setTitleAt(selectedIndex, "★ " + currentTitle);
             }
 
-            JLabel priorityLabel = new JLabel(currentTitle);
+            JLabel priorityLabel = new JLabel("★ " + currentTitle);
             priorityLabel.setForeground(Color.MAGENTA);
             prioritizedContainer.add(priorityLabel);
             prioritizedContainer.revalidate();
@@ -426,13 +441,18 @@ public class TaskifyApp extends javax.swing.JFrame {
         if (selectedIndex == -1) return null;
 
         String title = taskEntries.getTitleAt(selectedIndex);
-        for(List<Task> taskList : tasksByDate.values()) {
-            for(Task task : taskList) {
-                if(task.getTitle().equals(title)) {
+        if (title.startsWith("★ ")) {
+            title = title.substring(2);  // Remove star prefix
+        }
+
+        for (List<Task> taskList : tasksByDate.values()) {
+            for (Task task : taskList) {
+                if (task.getTitle().equals(title)) {
                     return task;
                 }
             }
-        } return null;
+        }
+        return null;
     }
     
     public void removeTaskFromMaps(String oldTitle) {
