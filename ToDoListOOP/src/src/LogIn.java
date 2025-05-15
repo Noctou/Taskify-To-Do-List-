@@ -10,13 +10,13 @@ public class LogIn extends javax.swing.JFrame {
     
     ImageIcon showToggle = new ImageIcon("src\\images\\showPassword.png");
     ImageIcon hideToggle = new ImageIcon("src\\images\\hidePassword.png");
-    //ImageIcon logoIcon;
+    ImageIcon logoIcon;
     
     public LogIn() {
         initComponents();
-        /*
+        
         try {
-            String imagePath = "src\\images\\todolist.png"; 
+            String imagePath = "src\\images\\logo.png"; 
             logoIcon = new ImageIcon(imagePath);
             if (logoIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
                 int originalWidth = logoIcon.getIconWidth();
@@ -36,7 +36,7 @@ public class LogIn extends javax.swing.JFrame {
             System.err.println("Error loading logo: " + e.getMessage());
             logo.setText("Logo");
         }
-        */
+        
         setLocationRelativeTo(null);
         setTitle("Log In");
         registerLinkActionPerformed();

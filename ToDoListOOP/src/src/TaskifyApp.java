@@ -5,6 +5,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import src.PromptWindows.*;
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.border.EmptyBorder;
 
 import java.time.ZoneId;
 import java.time.LocalDate;
@@ -114,8 +115,8 @@ public class TaskifyApp extends javax.swing.JFrame {
         });
 
         prioritizedContainer.setBackground(new java.awt.Color(51, 51, 51));
-        prioritizedContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
-        prioritizedContainer.setMaximumSize(new java.awt.Dimension(500, 400));
+        prioritizedContainer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        prioritizedContainer.setMaximumSize(new java.awt.Dimension(500, 300));
         prioritizedContainer.setPreferredSize(new java.awt.Dimension(600, 300));
 
         javax.swing.GroupLayout prioritizedContainerLayout = new javax.swing.GroupLayout(prioritizedContainer);
@@ -126,7 +127,7 @@ public class TaskifyApp extends javax.swing.JFrame {
         );
         prioritizedContainerLayout.setVerticalGroup(
             prioritizedContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 454, Short.MAX_VALUE)
+            .addGap(0, 452, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
@@ -142,15 +143,15 @@ public class TaskifyApp extends javax.swing.JFrame {
                         .addComponent(logOutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(editInfoButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)))
                 .addGap(53, 53, 53)
-                .addComponent(prioritizedContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 729, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addComponent(prioritizedContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 731, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuPanelLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(prioritizedContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prioritizedContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
                     .addGroup(menuPanelLayout.createSequentialGroup()
                         .addComponent(introductoryText)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -424,11 +425,12 @@ public class TaskifyApp extends javax.swing.JFrame {
                 taskEntries.setTitleAt(selectedIndex, "★ " + currentTitle);
             }
 
-            JLabel priorityLabel = new JLabel("★ " + currentTitle);
+            JLabel priorityLabel = new JLabel("  ★ " + currentTitle);
             priorityLabel.setForeground(Color.MAGENTA);
             prioritizedContainer.add(priorityLabel);
             prioritizedContainer.revalidate();
             prioritizedContainer.repaint();
+            
 
             JOptionPane.showMessageDialog(this, "Task marked as priority.");
         } else {
