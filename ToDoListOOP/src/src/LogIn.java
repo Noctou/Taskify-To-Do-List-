@@ -42,6 +42,7 @@ public class LogIn extends javax.swing.JFrame {
         registerLinkActionPerformed();
         togglePasswordVisibility();
         passwordFieldFocusListener();
+        passwordFieldKeyListener();
         
         container.revalidate();
         container.repaint();
@@ -105,14 +106,12 @@ public class LogIn extends javax.swing.JFrame {
             }
         });
 
-        toggleVisibility.setText("jLabel2");
-
         javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerLayout.createSequentialGroup()
-                .addContainerGap(94, Short.MAX_VALUE)
+                .addContainerGap(131, Short.MAX_VALUE)
                 .addComponent(logo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(92, 92, 92)
                 .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -244,6 +243,17 @@ public class LogIn extends javax.swing.JFrame {
             } @Override
             public void mouseExited(MouseEvent e) {
                 registerLink.setText("Register Here");
+            }
+        });
+    }
+    
+    public void passwordFieldKeyListener() {
+        passwordField.addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                logInButton.doClick();
+                }
             }
         });
     }

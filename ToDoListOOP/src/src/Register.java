@@ -1,6 +1,7 @@
 package src;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,13 +10,39 @@ public class Register extends javax.swing.JFrame {
     
     ImageIcon showToggle = new ImageIcon("src\\images\\showPassword.png");
     ImageIcon hideToggle = new ImageIcon("src\\images\\hidePassword.png");
+    ImageIcon logoIcon;
 
     public Register() {
         initComponents();
         setLocationRelativeTo(null);
         setTitle("Register");
+        
+        try {
+            String imagePath = "src\\images\\logo.png"; 
+            logoIcon = new ImageIcon(imagePath);
+            if (logoIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
+                int originalWidth = logoIcon.getIconWidth();
+                int originalHeight = logoIcon.getIconHeight();
+
+                int scaledWidth = 200;
+                int scaledHeight = (int)((double)originalHeight/originalWidth * scaledWidth);
+
+                Image scaledImage = logoIcon.getImage().getScaledInstance(
+                    scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+                logo.setIcon(new ImageIcon(scaledImage));
+                logo.setText("");
+
+                logo.setPreferredSize(new Dimension(scaledWidth, scaledHeight));
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading logo: " + e.getMessage());
+            logo.setText("Logo");
+        }
+        
+        goBackLinkActionPerformed();
         togglePasswordVisibility();
         passwordFieldFocusListener();
+        passwordFieldKeyListener();
     }
 
     @SuppressWarnings("unchecked")
@@ -29,9 +56,12 @@ public class Register extends javax.swing.JFrame {
         registerPasswordField = new javax.swing.JPasswordField();
         toggleVisibility = new javax.swing.JLabel();
         registerButton = new javax.swing.JButton();
+        logo = new javax.swing.JLabel();
+        goBackLink = new javax.swing.JLabel();
+        goBackLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(750, 460));
         setResizable(false);
 
         container.setBackground(new java.awt.Color(51, 51, 51));
@@ -54,8 +84,6 @@ public class Register extends javax.swing.JFrame {
         registerPasswordField.setForeground(new java.awt.Color(255, 255, 255));
         registerPasswordField.setText("enterpassword");
 
-        toggleVisibility.setText("jLabel1");
-
         registerButton.setBackground(new java.awt.Color(102, 0, 102));
         registerButton.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         registerButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -66,45 +94,77 @@ public class Register extends javax.swing.JFrame {
             }
         });
 
+        goBackLink.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        goBackLink.setForeground(new java.awt.Color(153, 0, 153));
+        goBackLink.setText("log in");
+
+        goBackLabel.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        goBackLabel.setForeground(new java.awt.Color(255, 255, 255));
+        goBackLabel.setText("Click on");
+
+        jLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("to go back");
+
         javax.swing.GroupLayout containerLayout = new javax.swing.GroupLayout(container);
         container.setLayout(containerLayout);
         containerLayout.setHorizontalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, containerLayout.createSequentialGroup()
-                .addContainerGap(386, Short.MAX_VALUE)
-                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(passwordLabel)
-                    .addComponent(usernameLabel)
-                    .addComponent(registerUserField)
-                    .addComponent(registerPasswordField)
-                    .addComponent(registerButton, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(toggleVisibility)
-                .addGap(51, 51, 51))
+                .addGap(94, 94, 94)
+                .addComponent(logo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(containerLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(passwordLabel)
+                            .addComponent(usernameLabel)
+                            .addComponent(registerUserField)
+                            .addComponent(registerPasswordField)
+                            .addComponent(registerButton, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(toggleVisibility)
+                        .addGap(51, 51, 51))
+                    .addGroup(containerLayout.createSequentialGroup()
+                        .addGap(152, 152, 152)
+                        .addComponent(goBackLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(goBackLink)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addContainerGap(119, Short.MAX_VALUE))))
         );
         containerLayout.setVerticalGroup(
             containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerLayout.createSequentialGroup()
                 .addGap(80, 80, 80)
                 .addComponent(usernameLabel)
-                .addGap(18, 18, 18)
-                .addComponent(registerUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(passwordLabel)
-                .addGap(18, 18, 18)
-                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(registerPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(toggleVisibility, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
-                .addComponent(registerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(containerLayout.createSequentialGroup()
+                        .addComponent(registerUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(passwordLabel)
+                        .addGap(18, 18, 18)
+                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(registerPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(toggleVisibility, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(containerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(goBackLabel)
+                            .addComponent(goBackLink)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(registerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(logo, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(container, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(container, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,6 +231,36 @@ public class Register extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_registerButtonActionPerformed
 
+    public void goBackLinkActionPerformed() {
+        goBackLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        goBackLink.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                LogIn logInWindow = new LogIn();
+                logInWindow.setVisible(true);
+                Register.this.dispose();
+            } @Override
+            public void mouseEntered(MouseEvent e) {
+                goBackLink.setText("<html><u>log in</u></html>");
+            } @Override
+            public void mouseExited(MouseEvent e) {
+                goBackLink.setText("log in");
+            }
+        });
+    }
+    
+    public void passwordFieldKeyListener() {
+        registerPasswordField.addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                registerButton.doClick();
+                }
+            }
+        });
+    }
+    
     public static void main(String args[]) {
         FlatDarkLaf.setup();
         
@@ -189,6 +279,10 @@ public class Register extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel container;
+    private javax.swing.JLabel goBackLabel;
+    private javax.swing.JLabel goBackLink;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel logo;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JButton registerButton;
     private javax.swing.JPasswordField registerPasswordField;

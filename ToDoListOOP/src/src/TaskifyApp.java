@@ -329,7 +329,6 @@ public class TaskifyApp extends javax.swing.JFrame {
     if (selectedIndex != -1) {
         String taskTitle = taskEntries.getTitleAt(selectedIndex);
 
-        // Remove the "★ " prefix if present
         String cleanTitle = taskTitle.startsWith("★ ") ? taskTitle.substring(2) : taskTitle;
 
         Task taskToDelete = tasksByTitle.get(cleanTitle.toLowerCase());
@@ -357,7 +356,6 @@ public class TaskifyApp extends javax.swing.JFrame {
                 }
                 tasksByTitle.remove(cleanTitle.toLowerCase());
 
-                // Optional: Remove from prioritized panel if it exists
                 for (Component comp : prioritizedContainer.getComponents()) {
                     if (comp instanceof JLabel label && label.getText().equals(cleanTitle)) {
                         prioritizedContainer.remove(label);
@@ -443,7 +441,7 @@ public class TaskifyApp extends javax.swing.JFrame {
 
         String title = taskEntries.getTitleAt(selectedIndex);
         if (title.startsWith("★ ")) {
-            title = title.substring(2);  // Remove star prefix
+            title = title.substring(2);
         }
 
         for (List<Task> taskList : tasksByDate.values()) {
