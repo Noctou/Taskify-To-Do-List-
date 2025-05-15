@@ -399,42 +399,109 @@ public class TaskifyApp extends javax.swing.JFrame {
 
     private void prioritizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prioritizeButtonActionPerformed
         Task selectedTask = getCurrentlySelectedTask();
-        if (selectedTask == null) {
-            JOptionPane.showMessageDialog(this, "Please select a task to prioritize.");
-            return;
-        }
+    if (selectedTask == null) {
+        JOptionPane.showMessageDialog(this, "Please select a task to prioritize or unprioritize.");
+        return;
+    }
 
-        selectedTask.setPriority(true);
-        String currentTitle = selectedTask.getTitle();
+    // Toggle priority status (ON to OFF or OFF to ON)
+    boolean newPriorityState = !selectedTask.isPriority();
+    String currentTitle = selectedTask.getTitle();
+    String actionVerb = newPriorityState ? "prioritized" : "unprioritized";
 
-        boolean updated = TaskDatabase.updateTask(
-            currentTitle,
-            currentTitle,
-            selectedTask.getDescription(),
-            selectedTask.getDeadline(),
-            true
-        );
+    // Update task priority status in the database
+    boolean updated = TaskDatabase.updateTask(
+        currentTitle,
+        currentTitle,
+        selectedTask.getDescription(),
+        selectedTask.getDeadline(),
+        newPriorityState
+    );
 
-        if (updated) {
-            int selectedIndex = taskEntries.getSelectedIndex();
-
-            if (!currentTitle.startsWith("★ ")) {
-                taskEntries.setTitleAt(selectedIndex, "★ " + currentTitle);
+    if (updated) {
+        // Update task object priority state
+        selectedTask.setPriority(newPriorityState);
+        
+        int selectedIndex = taskEntries.getSelectedIndex();
+        String displayTitle = newPriorityState ? "★ " + currentTitle : currentTitle;
+        
+        // Update tab title
+        taskEntries.setTitleAt(selectedIndex, displayTitle);
+        
+        if (newPriorityState) {
+            // If prioritizing, add to container
+            addTaskToPrioritizedPanel(selectedTask);
+        } else {
+            // If unprioritizing, remove from container
+            for (Component comp : prioritizedContainer.getComponents()) {
+                if (comp instanceof JLabel && ((JLabel) comp).getText().equals(" ★ " + currentTitle)) {
+                    prioritizedContainer.remove(comp);
+                    break;
+                }
             }
-
-            JLabel priorityLabel = new JLabel("  ★ " + currentTitle);
-            priorityLabel.setForeground(Color.MAGENTA);
-            prioritizedContainer.add(priorityLabel);
+            
+            // If no prioritized tasks are left, add the "No prioritized tasks" message
+            boolean hasPrioritized = false;
+            for (Task task : tasksByTitle.values()) {
+                if (task.isPriority() && !task.equals(selectedTask)) {
+                    hasPrioritized = true;
+                    break;
+                }
+            }
+            
+            if (!hasPrioritized) {
+                JLabel noTasksLabel = new JLabel(" No prioritized tasks");
+                noTasksLabel.setForeground(Color.LIGHT_GRAY);
+                noTasksLabel.setFont(new Font("Monospaced", Font.ITALIC, 12));
+                prioritizedContainer.add(noTasksLabel);
+            }
+            
             prioritizedContainer.revalidate();
             prioritizedContainer.repaint();
-            
-
-            JOptionPane.showMessageDialog(this, "Task marked as priority.");
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to update priority in database.");
         }
+
+        JOptionPane.showMessageDialog(this, "Task " + actionVerb + " successfully.");
+    } else {
+        JOptionPane.showMessageDialog(this, "Failed to update priority in database.");
+    }
     }//GEN-LAST:event_prioritizeButtonActionPerformed
 
+    private void refreshPrioritizedTasksPanel() {
+        // Clear the prioritized container
+        prioritizedContainer.removeAll();
+
+        // Add header
+        JLabel header = new JLabel(" Prioritized Tasks:");
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("Monospaced", Font.BOLD, 12));
+        prioritizedContainer.add(header);
+
+        // Add all prioritized tasks
+        boolean hasPrioritizedTasks = false;
+        for (Task task : tasksByTitle.values()) {
+            if (task.isPriority()) {
+                hasPrioritizedTasks = true;
+                JLabel priorityLabel = new JLabel(" ★ " + task.getTitle());
+                priorityLabel.setForeground(Color.MAGENTA);
+                priorityLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
+                prioritizedContainer.add(priorityLabel);
+            }
+        }
+
+        // If no prioritized tasks, add a message
+        if (!hasPrioritizedTasks) {
+            JLabel noTasksLabel = new JLabel(" No prioritized tasks");
+            noTasksLabel.setForeground(Color.LIGHT_GRAY);
+            noTasksLabel.setFont(new Font("Monospaced", Font.ITALIC, 12));
+            prioritizedContainer.add(noTasksLabel);
+        }
+
+        // Refresh the UI
+        prioritizedContainer.revalidate();
+        prioritizedContainer.repaint();
+    }
+
+    
     private Task getCurrentlySelectedTask() {
         int selectedIndex = taskEntries.getSelectedIndex();
         if (selectedIndex == -1) return null;
@@ -513,16 +580,16 @@ public class TaskifyApp extends javax.swing.JFrame {
             while(resultSet.next()) {
                 String title = resultSet.getString("taskTitle");
                 String description = resultSet.getString("taskDescription");
-                java.sql.Date deadline = resultSet.getDate("taskDeadline");
-
-                Task task = new Task(title, description, new java.sql.Timestamp(deadline.getTime()));
+                java.sql.Timestamp deadline = resultSet.getTimestamp("taskDeadline");
+                Task task = new Task(title, description, deadline);
+                
                 task.setPriority(resultSet.getBoolean("isPriority"));
                 tasksByTitle.put(title, task);
 
                 addTaskToPanel(task);
     
                 if(deadline != null) {
-                    LocalDate localDate = deadline.toLocalDate();
+                    LocalDate localDate = deadline.toLocalDateTime().toLocalDate();
                     tasksByDate.computeIfAbsent(localDate, k -> new ArrayList<>())
                               .add(task);
                 }
@@ -589,7 +656,7 @@ public class TaskifyApp extends javax.swing.JFrame {
 
         @Override
         public Color getSpecialForegroundColor() {
-            return Color.WHITE;
+            return Color.MAGENTA;
         }
 
         @Override
@@ -604,7 +671,7 @@ public class TaskifyApp extends javax.swing.JFrame {
             List<Task> tasks = tasksByDate.getOrDefault(localDate, new ArrayList<>());
             boolean hasIncomplete = tasks.stream().anyMatch(task -> !task.isCompleted());
 
-            return hasIncomplete ? new Color(0, 150, 0) : new Color(100, 100, 100);
+            return hasIncomplete ? new Color(0, 150, 0) : new Color(0, 150, 0);
         }
 
         @Override
@@ -643,24 +710,25 @@ public class TaskifyApp extends javax.swing.JFrame {
     }
     
     private void loadPrioritizedTasks() {
-        prioritizedContainer.removeAll();
-        
-        JLabel header = new JLabel(" Prioritized Tasks:");
-        header.setForeground(Color.WHITE);
-        header.setFont(new Font("Monospaced", Font.BOLD, 12));
-        prioritizedContainer.add(header);
-
-        for(Task task : tasksByTitle.values()) {
-            if(task.isPriority()) {
-                JLabel priorityLabel = new JLabel(" ★ " + task.getTitle());
-                priorityLabel.setForeground(Color.MAGENTA);
-                priorityLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
-                prioritizedContainer.add(priorityLabel);
+        refreshPrioritizedTasksPanel();
+    }
+    
+    private void addTaskToPrioritizedPanel(Task task) {
+        // Check if a "No prioritized tasks" message exists and remove it
+        for (Component comp : prioritizedContainer.getComponents()) {
+            if (comp instanceof JLabel && ((JLabel) comp).getText().equals(" No prioritized tasks")) {
+                prioritizedContainer.remove(comp);
+                break;
             }
         }
-        prioritizedContainer.revalidate();
-        prioritizedContainer.repaint();
+
+        // Add the prioritized task label
+        JLabel priorityLabel = new JLabel(" ★ " + task.getTitle());
+        priorityLabel.setForeground(Color.MAGENTA);
+        priorityLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        prioritizedContainer.add(priorityLabel);
     }
+
     
     public static void main(String args[]) {
         FlatDarkLaf.setup();

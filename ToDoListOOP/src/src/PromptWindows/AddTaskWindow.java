@@ -188,10 +188,18 @@ public class AddTaskWindow extends javax.swing.JFrame {
         Calendar timeCal = Calendar.getInstance();
         timeCal.setTime(selectedTime);
 
-        finalCal.set(Calendar.HOUR, timeCal.get(Calendar.HOUR));
-        finalCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+        int hour = timeCal.get(Calendar.HOUR);
+        int minute = timeCal.get(Calendar.MINUTE);
+        int amPm = timeCal.get(Calendar.AM_PM);
+
+        // Convert to 24-hour time safely
+        if (hour == 12) hour = 0; // 12 AM or 12 PM edge case
+        if (amPm == Calendar.PM) hour += 12;
+
+        finalCal.set(Calendar.HOUR_OF_DAY, hour);
+        finalCal.set(Calendar.MINUTE, minute);
         finalCal.set(Calendar.SECOND, 0);
-        finalCal.set(Calendar.AM_PM, timeCal.get(Calendar.AM_PM));
+        finalCal.set(Calendar.MILLISECOND, 0);
 
         Date finalDeadline = finalCal.getTime();
 
