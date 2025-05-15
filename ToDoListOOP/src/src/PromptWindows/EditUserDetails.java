@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.event.*;
 
 import java.awt.event.*;
-
+import src.TaskifyApp;
 import java.awt.*;
 
 public class EditUserDetails extends javax.swing.JFrame {
@@ -83,7 +83,7 @@ public class EditUserDetails extends javax.swing.JFrame {
 
         confirmButton.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         confirmButton.setForeground(new java.awt.Color(255, 255, 255));
-        confirmButton.setText("Confirm Update");
+        confirmButton.setText("Confirm");
         confirmButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 confirmButtonActionPerformed(evt);
@@ -191,7 +191,24 @@ public class EditUserDetails extends javax.swing.JFrame {
 
         if (success) {
             javax.swing.JOptionPane.showMessageDialog(this, "User details updated successfully.");
-            this.dispose();
+
+            try {
+                String javaBin = System.getProperty("java.home") + "/bin/java";
+                String classpath = System.getProperty("java.class.path");
+
+                System.out.println("Java bin: " + javaBin);
+                System.out.println("Classpath: " + classpath);
+
+                ProcessBuilder builder = new ProcessBuilder(
+                    javaBin, "-cp", classpath, "src.LogIn" // <-- your actual entry point
+                );
+                builder.inheritIO(); // optional but useful
+                builder.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            System.exit(0); // Close the current instance
         } else {
             javax.swing.JOptionPane.showMessageDialog(this, "Update failed. Try again.");
         }
