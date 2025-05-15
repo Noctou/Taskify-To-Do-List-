@@ -17,4 +17,5 @@ CREATE TABLE task (
     taskTitle VARCHAR(255),
     taskDescription VARCHAR(255),
     taskDeadline DATE,
+    isPriority tinyInt
 );
